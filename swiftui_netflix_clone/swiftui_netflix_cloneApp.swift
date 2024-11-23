@@ -11,7 +11,7 @@ import SwiftUI
 struct swiftui_netflix_cloneApp: App {
     var body: some Scene {
         WindowGroup {
-            ContentView()
+            NetflixHomeView()
         }
     }
 }
