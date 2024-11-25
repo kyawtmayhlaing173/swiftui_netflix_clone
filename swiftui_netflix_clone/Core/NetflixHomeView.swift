@@ -56,10 +56,6 @@ struct NetflixHomeView: View {
                     .frame(height: 120)
                 NetflixHeroCell()
                     .padding(.horizontal, 32)
-                
-                Text("\(scrollViewOffset)")
-                    .foregroundStyle(.netflixDarkRed)
-                
                 categoryRows
             }
         }
