@@ -20,7 +20,7 @@ struct NetflixDetailsProductView: View {
     var onDownloadPressed: (() -> Void)? = nil
     
     var body: some View {
-        ScrollView(.vertical) {
+        VStack {
             Text(title)
                 .fontWeight(.bold)
                 .frame(maxWidth: .infinity, alignment: .leading)

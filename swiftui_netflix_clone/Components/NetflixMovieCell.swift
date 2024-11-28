@@ -10,8 +10,8 @@ import SwiftUI
 struct NetflixMovieCell: View {
     var width: CGFloat = 90
     var height: CGFloat = 140
-    var imageName: String = Constants.randomImage
-    var title: String? = "Movie Title"
+    var imageName: String?
+    var title: String?
     var isRecentlyAdded: Bool = true
     var topTenRanking: Int? = nil
 
@@ -29,7 +29,7 @@ struct NetflixMovieCell: View {
                     .offset(x: 20, y: 20)
             }
                         ZStack(alignment: .bottom) {
-                ImageLoaderView(urlString: imageName)
+                            ImageLoaderView(urlString: "https://image.tmdb.org/t/p/w500\(imageName ?? "")")
                 VStack(spacing: 0) {
                     if let title, let firstWord = title.components(separatedBy: " ").first {
                         Text(firstWord)

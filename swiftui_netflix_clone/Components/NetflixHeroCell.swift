@@ -9,9 +9,9 @@ import SwiftUI
 
 struct NetflixHeroCell: View {
     
-    var imageName: String = Constants.randomImage
+    var imageName: String? = Constants.randomImage
     var isNetflixFilm: Bool = true
-    var title: String = "Players"
+    var title: String?
     var categories: [String] = ["Raunchy", "Romantic", "Comedy"]
     var onBackgroundPressed: (() -> Void)? = nil
     var onPlayPressed: (() -> Void)? = nil
@@ -19,7 +19,10 @@ struct NetflixHeroCell: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            ImageLoaderView(urlString: imageName)
+            ImageLoaderView(urlString: "https://image.tmdb.org/t/p/w500\(imageName ?? "")")
+                .onTapGesture {
+                    onBackgroundPressed?()
+                }
             
             VStack(spacing: 16) {
                 VStack(spacing: 0) {
@@ -38,7 +41,7 @@ struct NetflixHeroCell: View {
                         }
                     }
                     
-                    Text(title)
+                    Text(title ?? "")
                         .font(.system(size: 50, weight: .medium, design: .serif))
                 }
                 
@@ -64,6 +67,9 @@ struct NetflixHeroCell: View {
                     .foregroundStyle(.netflixDarkGray)
                     .background(.netflixWhite)
                     .cornerRadius(4)
+                    .onTapGesture {
+                        onPlayPressed?()
+                    }
                     
                     HStack {
                         Image(systemName: "plus")
@@ -74,6 +80,9 @@ struct NetflixHeroCell: View {
                     .foregroundStyle(.netflixWhite)
                     .background(.netflixDarkGray)
                     .cornerRadius(4)
+                    .onTapGesture {
+                        onMyListPressed?()
+                    }
                 }
                 .font(.callout)
                 .fontWeight(.medium)

@@ -6,12 +6,18 @@
 //
 
 import SwiftUI
+import SwiftfulRouting
 
 @main
 struct swiftui_netflix_cloneApp: App {
+    @StateObject private var homeVM = NetflixHomeViewModel()
+    
     var body: some Scene {
         WindowGroup {
-            NetflixHomeView()
+            RouterView { _ in
+                NetflixHomeView()
+                    .environmentObject(homeVM)
+            }
         }
     }
 }
