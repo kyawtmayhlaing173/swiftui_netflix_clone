@@ -6,6 +6,7 @@
 //
 
 import SwiftUI
+import SwiftfulRouting
 
 struct NetflixHeroCell: View {
     
@@ -29,6 +30,7 @@ struct NetflixHeroCell: View {
                     if isNetflixFilm {
                         HStack(spacing: 8) {
                             Text("N")
+                                .multilineTextAlignment(.center)
                                 .foregroundStyle(.netflixDarkRed)
                                 .font(.largeTitle)
                                 .fontWeight(.black)
@@ -43,6 +45,7 @@ struct NetflixHeroCell: View {
                     
                     Text(title ?? "")
                         .font(.system(size: 50, weight: .medium, design: .serif))
+                        .multilineTextAlignment(.center)
                 }
                 
                 HStack(spacing: 8) {

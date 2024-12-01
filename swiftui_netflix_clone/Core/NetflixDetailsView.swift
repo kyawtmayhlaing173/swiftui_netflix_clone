@@ -9,24 +9,37 @@ import SwiftUI
 
 struct NetflixDetailsView: View {
     @State private var isMyList: Bool = false
+    @StateObject private var detailVM: NetflixDetailsViewModel
+    var movie: Movie
+        
+    init(movie: Movie) {
+        self.movie = movie
+        self._detailVM = StateObject(wrappedValue: NetflixDetailsViewModel(searchQuery: movie.original_name ?? movie.original_title ?? ""))
+    }
+    
+    var currentYear: Int {
+        let year = Calendar.current.component(.year, from: Date())
+        return year
+    }
     
     var body: some View {
+        let year = DateManager().getYearFromDateString(dateString: movie.release_date)
+
         ZStack {
             Color.netflixBlack.ignoresSafeArea()
             Color.netflixDarkGray.opacity(0.3).ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
-                NetflixDetailsHeaderView()
+                NetflixDetailsHeaderView(youtubeId: detailVM.youtubeId)
                 ScrollView(.vertical) {
                     VStack(alignment: .leading, spacing: 16) {
                         NetflixDetailsProductView(
-                            title: "Arcane",
+                            title: movie.original_name ?? movie.original_title ?? "",
                             isNew: true,
-                            yearReleased: "2024",
+                            yearReleased: String(year),
                             seasonCount: 2,
                             hasClosedCaptions: true,
                             isTopTen: 3,
-                            descriptionText: "Orphaned sisters Vi and Powder being trouble to Zaun's underground streets in the wake of a heist in post Piltover.",
-                            castText: "Cast: Hailee Steinfeld, Ella Purnell, Kevin Alejandro...",
+                            descriptionText: movie.overview,
                             onPlayPressed: {
                                 
                             },
@@ -54,5 +67,18 @@ struct NetflixDetailsView: View {
 }
 
 #Preview {
-    NetflixDetailsView()
+    NetflixDetailsView(
+        movie: Movie(
+            id: 1,
+            media_type: "",
+            original_name: "",
+            original_title: "",
+            poster_path: "",
+            overview: "",
+            vote_count: 1,
+            release_date: "",
+            vote_average: 1,
+            title: ""
+        )
+    )
 }

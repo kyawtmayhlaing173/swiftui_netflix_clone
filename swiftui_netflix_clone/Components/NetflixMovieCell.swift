@@ -10,7 +10,7 @@ import SwiftUI
 struct NetflixMovieCell: View {
     var width: CGFloat = 90
     var height: CGFloat = 140
-    var imageName: String?
+    var imageName: String? = Constants.randomImage
     var title: String?
     var isRecentlyAdded: Bool = true
     var topTenRanking: Int? = nil

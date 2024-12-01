@@ -60,11 +60,12 @@ struct NetflixHomeView: View {
                     .opacity(0)
                     .frame(height: 120)
                 if (movies.count > 0) {
+                    
                     NetflixHeroCell(
                         imageName: movies[0].poster_path,
-                        title: movies[0].original_title ?? "",
+                        title: movies[0].title ?? movies[0].original_name ?? "",
                         onBackgroundPressed: {
-                        onMoviePressed()
+                            onMoviePressed(movie: movies[0])
                     })
                         .padding(.horizontal, 32)
                 }
@@ -78,9 +79,9 @@ struct NetflixHomeView: View {
         }
     }
     
-    private func onMoviePressed() {
+    private func onMoviePressed(movie: Movie) {
         router.showScreen(.sheet) { _ in
-            NetflixDetailsView()
+            NetflixDetailsView(movie: movie)
         }
     }
     
@@ -157,10 +158,13 @@ struct NetflixHomeView: View {
                             ForEach(Array(homeVM.allMovies.enumerated()), id: \.offset) {(index, product) in
                                 NetflixMovieCell(
                                     imageName: product.poster_path,
-                                    title: product.original_title ?? "",
+                                    title: product.title,
                                     isRecentlyAdded: false,
                                     topTenRanking: rowIndex == 1 ? (index + 1) : nil
                                 )
+                                .onTapGesture {
+                                    onMoviePressed(movie: product)
+                                }
                             }
                         }
                     }

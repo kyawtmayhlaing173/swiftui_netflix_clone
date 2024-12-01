@@ -6,18 +6,19 @@
 //
 
 import SwiftUI
+import SwiftfulRouting
 
 struct NetflixDetailsHeaderView: View {
-    var imageName: String = Constants.randomImage
     var progress: Double = 0.2
     var onAirplayPressed: (() -> Void)? = nil
     var onXMarkPressed: (() -> Void)? = nil
-    
+    var youtubeId: String?
+    @Environment(\.router) var router
+
     var body: some View {
         ZStack {
-            ImageLoaderView(urlString: Constants.randomImage)
-                .frame(maxHeight: 200)
-                .aspectRatio(contentMode: .fill)
+            YoutubeView(videoId: youtubeId ?? "")
+            
             VStack {
                 HStack(alignment: .top) {
                     Spacer()
@@ -31,12 +32,13 @@ struct NetflixDetailsHeaderView: View {
                         .background(Color.netflixDarkGray)
                         .cornerRadius(50)
                         .foregroundStyle(Color.netflixWhite)
+                        .onTapGesture {
+                            router.dismissScreen()
+                        }
                 }
                 .padding(8)
                 .fontWeight(.bold)
                 Spacer()
-                ProgressView(value: 0.5)
-                    .padding(.vertical, 8)
             }
         }
         .aspectRatio(2, contentMode: .fit)
