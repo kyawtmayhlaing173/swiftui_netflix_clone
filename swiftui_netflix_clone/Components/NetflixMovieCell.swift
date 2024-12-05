@@ -28,8 +28,8 @@ struct NetflixMovieCell: View {
                     )
                     .offset(x: 20, y: 20)
             }
-                        ZStack(alignment: .bottom) {
-                            ImageLoaderView(urlString: "https://image.tmdb.org/t/p/w500\(imageName ?? "")")
+            ZStack(alignment: .bottom) {
+                ImageLoaderView(urlString: "https://image.tmdb.org/t/p/w500\(imageName ?? "")")
                 VStack(spacing: 0) {
                     if let title, let firstWord = title.components(separatedBy: " ").first {
                         Text(firstWord)

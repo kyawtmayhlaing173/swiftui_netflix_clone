@@ -85,6 +85,12 @@ struct NetflixHomeView: View {
         }
     }
     
+    private func onSearchPressed() {
+        router.showScreen(.fullScreenCover) { _ in
+            NetflixSearchView()
+        }
+    }
+    
     private var header: some View {
         HStack(spacing: 0) {
             Text("For You")
@@ -104,7 +110,7 @@ struct NetflixHomeView: View {
                     }
                 Image(systemName: "magnifyingglass")
                     .onTapGesture {
-                        
+                        onSearchPressed()
                     }
             }
         }

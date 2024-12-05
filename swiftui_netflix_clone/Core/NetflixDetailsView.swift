@@ -14,7 +14,12 @@ struct NetflixDetailsView: View {
         
     init(movie: Movie) {
         self.movie = movie
-        self._detailVM = StateObject(wrappedValue: NetflixDetailsViewModel(searchQuery: movie.original_name ?? movie.original_title ?? ""))
+        self._detailVM = StateObject(
+            wrappedValue: NetflixDetailsViewModel(
+                searchQuery: movie.original_name ?? movie.original_title ?? "",
+                movie: movie
+            )
+        )
     }
     
     var currentYear: Int {
@@ -45,7 +50,8 @@ struct NetflixDetailsView: View {
                             },
                             onDownloadPressed: {
                                 
-                            }
+                            },
+                            credits: detailVM.movieCredit
                         )
                         HStack(spacing: 32) {
                             MyListButton(

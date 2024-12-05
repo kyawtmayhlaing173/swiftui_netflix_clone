@@ -11,15 +11,23 @@ import Combine
 class NetflixDetailsViewModel: ObservableObject {
     @Published var searchResult: VideoElement?
     @Published var youtubeId: String?
+    @Published var movieCredit: [Cast] = []
+    @Published var movie: Movie
     let searchQuery: String
+    
     
     private let movieDetailService: MovieDetailDataService
     private var cancellables = Set<AnyCancellable>()
     
-    init(searchQuery: String) {
+    init(searchQuery: String, movie: Movie) {
         self.searchQuery = searchQuery
-        movieDetailService = MovieDetailDataService(searchQuery: "\(searchQuery) trailer")
+        self.movie = movie
+        movieDetailService = MovieDetailDataService(
+            searchQuery: "\(searchQuery) trailer",
+            movieId: movie.id
+        )
         getMovie()
+        getCredits()
     }
     
     func getMovie() {
@@ -31,6 +39,17 @@ class NetflixDetailsViewModel: ObservableObject {
                 self?.youtubeId = id
             }
             .store(in: &cancellables)
+    }
+    
+    func getCredits() {
+        movieDetailService.$movieCasts
+            .combineLatest($movieCredit)
+            .sink { [weak self] (casts, _) in
+                self?.movieCredit = casts
+                print("Movie credit \(self?.movieCredit)")
+            }
+            .store(in: &cancellables)
+        
     }
 }
 

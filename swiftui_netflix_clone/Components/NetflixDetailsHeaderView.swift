@@ -41,6 +41,7 @@ struct NetflixDetailsHeaderView: View {
                 Spacer()
             }
         }
+        .foregroundStyle(Color.white)
         .aspectRatio(2, contentMode: .fit)
     }
 }

@@ -6,18 +6,46 @@
 //
 
 import SwiftUI
+import SwiftfulRouting
 
 struct NetflixDetailsProductView: View {
-    var title: String = "Arcane"
-    var isNew: Bool = true
-    var yearReleased: String = "2024"
-    var seasonCount: Int? = 2
-    var hasClosedCaptions: Bool = true
+    let title: String
+    let isNew: Bool
+    let yearReleased: String
+    let seasonCount: Int
+    let hasClosedCaptions: Bool
     var isTopTen: Int? = 6
-    var descriptionText: String? = "Orphaned sisters Vi and Powder being trouble to Zaun's underground streets in the wake of a heist in post Piltover."
-    var castText: String? = "Cast: Hailee Steinfeld, Ella Purnell, Kevin Alejandro..."
-    var onPlayPressed: (() -> Void)? = nil
-    var onDownloadPressed: (() -> Void)? = nil
+    let descriptionText: String
+    var creditText: String? = ""
+    var credits: [Cast] = []
+    let onPlayPressed: (() -> Void)?
+    let onDownloadPressed: (() -> Void)?
+    @Environment(\.router) var router
+
+    init(
+        title: String,
+        isNew: Bool?,
+        yearReleased: String = "2024",
+        seasonCount: Int = 2,
+        hasClosedCaptions: Bool = true,
+        isTopTen: Int? = 6,
+        descriptionText: String? = "",
+        onPlayPressed: (() -> Void)? = nil,
+        onDownloadPressed: (() -> Void)? = nil,
+        credits: [Cast]
+    ) {
+        self.title = title
+        self.isNew = isNew ?? false
+        self.yearReleased = yearReleased
+        self.seasonCount = seasonCount
+        self.hasClosedCaptions = hasClosedCaptions
+        self.isTopTen = isTopTen ?? 9
+        self.descriptionText = descriptionText ?? ""
+        self.creditText = credits.map { $0.name ?? "" }.joined(separator: ", ")
+        self.onPlayPressed = onPlayPressed
+        self.onDownloadPressed = onDownloadPressed
+        self.credits = credits
+    }
     
     var body: some View {
         VStack {
@@ -31,9 +59,7 @@ struct NetflixDetailsProductView: View {
                         .foregroundStyle(Color.green)
                 }
                 Text(yearReleased)
-                if let seasonCount {
-                    Text("\(seasonCount) Seasons")
-                }
+                Text("\(seasonCount) Seasons")
                 
                 if hasClosedCaptions {
                     Image(systemName: "captions.bubble")
@@ -84,18 +110,28 @@ struct NetflixDetailsProductView: View {
             }
             
             Group {
-                if let descriptionText {
-                    Text(descriptionText)
-                }
+                Text(descriptionText)
                 
-                if let castText {
-                    Text(castText)
-                        .foregroundStyle(.netflixLightGray)
+                if let creditText {
+                    HStack {
+                        Text(creditText)
+                            .lineLimit(1)
+                            .truncationMode(.tail)
+                        Text("...more")
+                            
+                    }
+                    .font(.subheadline)
+                    .foregroundStyle(.netflixLightGray)
                 }
             }
             .font(.callout)
             .frame(maxWidth: .infinity, alignment: .leading)
             .multilineTextAlignment(.leading)
+            .onTapGesture {
+                router.showScreen(.sheet) { _ in
+                    NetflixCreditList(creditList: credits)
+                }
+            }
                 
         }
         .padding(16)
@@ -129,9 +165,9 @@ struct NetflixDetailsProductView: View {
     ZStack {
         Color.netflixBlack.ignoresSafeArea()
         VStack(spacing: 40) {
-            NetflixDetailsProductView()
-            NetflixDetailsProductView(isNew: false, seasonCount: nil, hasClosedCaptions: false, isTopTen: nil)
-            NetflixDetailsProductView(isNew: true, seasonCount: 10, isTopTen: nil)
+            NetflixDetailsProductView(title: "Arcane", isNew: false, credits: [])
+            NetflixDetailsProductView(title: "Arcane", isNew: false, hasClosedCaptions: false, credits: [])
+            NetflixDetailsProductView(title: "Arcane", isNew: true, seasonCount: 10, isTopTen: 4, credits: [])
         }
     }
 }
