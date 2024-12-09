@@ -9,11 +9,12 @@ import SwiftUI
 
 struct NetflixCreditList: View {
     var creditList: [Cast]
+    var title: String
     
     var body: some View {
         ScrollView {
             VStack(alignment: .center, spacing: 8) {
-                Text("Go Ahead")
+                Text(title)
                     .font(.title)
                 Text("Cast")
                     .font(.title3)
@@ -24,12 +25,13 @@ struct NetflixCreditList: View {
             .foregroundStyle(Color.netflixWhite)
         }
         .scrollIndicators(.hidden)
+        .padding()
     }
 }
 
 #Preview {
     ZStack {
         Color.netflixBlack.ignoresSafeArea()
-        NetflixCreditList(creditList: [])
+        NetflixCreditList(creditList: [], title: "Arcane")
     }
 }

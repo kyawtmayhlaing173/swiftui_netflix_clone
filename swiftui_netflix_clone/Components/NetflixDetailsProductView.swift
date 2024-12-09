@@ -129,7 +129,10 @@ struct NetflixDetailsProductView: View {
             .multilineTextAlignment(.leading)
             .onTapGesture {
                 router.showScreen(.sheet) { _ in
-                    NetflixCreditList(creditList: credits)
+                    NetflixCreditList(
+                        creditList: credits,
+                        title: title
+                    )
                 }
             }
                 

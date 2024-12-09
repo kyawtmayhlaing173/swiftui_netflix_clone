@@ -15,8 +15,7 @@ struct swiftui_netflix_cloneApp: App {
     var body: some Scene {
         WindowGroup {
             RouterView { _ in
-                NetflixHomeView()
-                    .environmentObject(homeVM)
+                NetflixTabBarView()
             }
         }
     }

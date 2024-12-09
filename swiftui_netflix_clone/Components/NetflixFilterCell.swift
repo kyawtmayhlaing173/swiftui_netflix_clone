@@ -25,7 +25,7 @@ struct NetflixFilterCell: View {
         .background(
             ZStack {
                 Capsule(style: .circular)
-                    .fill(.netflixDarkGray)
+                    .fill(.netflixLightGray)
                     .opacity(isSelected ? 1:0)
                 Capsule(style:.circular)
                     .stroke(lineWidth: 1)

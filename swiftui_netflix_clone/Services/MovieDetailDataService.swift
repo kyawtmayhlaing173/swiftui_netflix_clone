@@ -38,7 +38,7 @@ class MovieDetailDataService {
     }
     
     func getMovieCredit(with movieId: Int) {
-        guard let url = URL(string: "\(Constants.baseURL)/3/movie/645757/credits?api_key=\(Constants.API_KEY)") else { return }
+        guard let url = URL(string: "\(Constants.baseURL)/3/movie/\(movieId)/credits?api_key=\(Constants.API_KEY)") else { return }
         creditSubscription = NetworkingManager.download(url: url)
             .decode(type: Credits.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
@@ -46,7 +46,6 @@ class MovieDetailDataService {
                 receiveCompletion: NetworkingManager.handleCompletion,
                 receiveValue: { [weak self] results in
                 self?.movieCasts = results.cast
-                print("Movie casts \(self?.movieCasts)")
                 self?.creditSubscription?.cancel()
             })
                 

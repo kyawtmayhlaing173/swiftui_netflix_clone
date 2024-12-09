@@ -46,7 +46,6 @@ class NetflixDetailsViewModel: ObservableObject {
             .combineLatest($movieCredit)
             .sink { [weak self] (casts, _) in
                 self?.movieCredit = casts
-                print("Movie credit \(self?.movieCredit)")
             }
             .store(in: &cancellables)
         
