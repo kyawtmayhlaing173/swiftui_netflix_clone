@@ -23,6 +23,7 @@ struct FilterModel: Hashable, Equatable {
 struct NetflixFilterBarView: View {
     var filters: [FilterModel] = FilterModel.mockArray;
     var selectedFilter: FilterModel? = nil
+    var selectedCategory: String? = nil
     var onXMarkPressed: (() -> Void)? = nil
     var onFilterPressed: ((FilterModel) -> Void)? = nil
     
@@ -48,7 +49,7 @@ struct NetflixFilterBarView: View {
                 ForEach(filters, id: \.self) { filter in
                     if selectedFilter == nil || selectedFilter == filter {
                         NetflixFilterCell(
-                            title: filter.title,
+                            title: filter.title == "Categories" ? selectedCategory ?? "Categories" : filter.title,
                             isDropdown: filter.isDropdown,
                             isSelected: selectedFilter == filter
                         )

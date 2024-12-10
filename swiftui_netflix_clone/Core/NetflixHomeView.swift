@@ -8,9 +8,21 @@
 import SwiftUI
 import SwiftfulRouting
 
+enum Trending {
+    case tv, movie
+    
+    var title: String {
+        switch self {
+        case .tv: return "tv"
+        case .movie: return "movie"
+        }
+    }
+}
+
 struct NetflixHomeView: View {
     @State private var filters = FilterModel.mockArray
     @State private var selectedFilter: FilterModel? = nil
+    @State private var selectedCategory: String? = nil
     @State private var scrollViewOffset: CGFloat = 0
     @Environment(\.router) var router
     @EnvironmentObject var homeVM: NetflixHomeViewModel
@@ -91,6 +103,10 @@ struct NetflixHomeView: View {
         }
     }
     
+    private func onCategoriesPressed(genreId: Int) {
+        homeVM.getMovieByGenre(genreId: genreId)
+    }
+    
     private var header: some View {
         HStack(spacing: 0) {
             Text("For You")
@@ -118,6 +134,13 @@ struct NetflixHomeView: View {
         .foregroundColor(Color.netflixWhite)
     }
     
+    func getTrendingMoviesByCategory(selectedFilter: FilterModel?) {
+        guard let filter = selectedFilter else { return }
+        homeVM.getTrendingMovies(
+            category: filter.title.lowercased().contains("tv") ? Trending.tv: Trending.movie
+        )
+    }
+    
     private var fullHeaderwithFilter: some View {
         VStack(spacing: 0) {
             header
@@ -126,11 +149,32 @@ struct NetflixHomeView: View {
             if scrollViewOffset < 0 {
                 NetflixFilterBarView(
                     filters: filters,
-                    selectedFilter: selectedFilter) {
-                        selectedFilter = nil
-                    } onFilterPressed: { newFilter in
-                        selectedFilter = newFilter
+                    selectedFilter: selectedFilter,
+                    selectedCategory: selectedCategory
+                ) {
+                        clearGenreData()
+                } onFilterPressed: { newFilter in
+                    selectedFilter = newFilter
+                    if (newFilter.title != "Categories") {
+                        getTrendingMoviesByCategory(selectedFilter: selectedFilter)
+                    } else {
+                        router.showScreen(
+                            .fullScreenCover,
+                            destination: { _ in
+                                NetflixGenresList(
+                                    genres: homeVM.genres,
+                                    onGenrePressed: { genre in
+                                        onCategoriesPressed(genreId: genre.id)
+                                        selectedCategory = genre.name
+                                    },
+                                    onXMarkPressed: {
+                                        clearGenreData()
+                                    }
+                                )
+                            .background(.ultraThinMaterial)
+                        })
                     }
+                }
                     .padding(.top, 16)
                     .transition(.move(edge: .top).combined(with: .opacity))
             }
@@ -148,6 +192,12 @@ struct NetflixHomeView: View {
             }
         )
         .animation(.smooth, value: scrollViewOffset)
+    }
+    
+    func clearGenreData() {
+        selectedFilter = nil
+        selectedCategory = nil
+        homeVM.getUpcomingMovies()
     }
     
     private var categoryRows: some View {
@@ -174,6 +224,7 @@ struct NetflixHomeView: View {
                             }
                         }
                     }
+                    .scrollIndicators(.hidden)
                 }
             }
             .padding(.horizontal, 12)
