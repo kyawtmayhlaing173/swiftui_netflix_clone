@@ -8,7 +8,7 @@
 import SwiftUI
 
 struct ShareButton: View {
-    var url: String = "https://www.ticketier.com"
+    var url: String = "https://www.netflix.com/browse"
     
     var body: some View {
         if let url = URL(string: url) {

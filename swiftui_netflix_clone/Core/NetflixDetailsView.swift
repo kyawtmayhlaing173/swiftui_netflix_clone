@@ -64,6 +64,7 @@ struct NetflixDetailsView: View {
                             ShareButton()
                         }
                         .padding(.leading, 32)
+                        NetflixDetailMoreSection(detailVM: detailVM)
                     }
                 }
             }
@@ -74,17 +75,6 @@ struct NetflixDetailsView: View {
 
 #Preview {
     NetflixDetailsView(
-        movie: Movie(
-            id: 1,
-            media_type: "",
-            original_name: "",
-            original_title: "",
-            poster_path: "",
-            overview: "",
-            vote_count: 1,
-            release_date: "",
-            vote_average: 1,
-            title: ""
-        )
+        movie: DeveloperPreview().movie
     )
 }

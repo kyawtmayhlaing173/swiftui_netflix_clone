@@ -12,8 +12,10 @@ class MovieDetailDataService {
     let searchQuery: String
     @Published var movieDetailYoutubeLink: VideoElement?
     @Published var movieCasts: [Cast] = []
+    @Published var recommendations: [Movie] = []
     var movieDetailSubscription: AnyCancellable?
     var creditSubscription: AnyCancellable?
+    var recommendationSubscription: AnyCancellable?
     let movieId: Int
     
     init(searchQuery: String, movieId: Int) {
@@ -21,6 +23,7 @@ class MovieDetailDataService {
         self.movieId = movieId
         getMovieDetailVideo(with: searchQuery)
         getMovieCredit(with: movieId)
+        getRecommendationMovie(with: movieId)
     }
     
     func getMovieDetailVideo(with query: String) {
@@ -32,7 +35,8 @@ class MovieDetailDataService {
             .receive(on: DispatchQueue.main)
             .sink(
                 receiveCompletion: NetworkingManager.handleCompletion,
-                receiveValue: { [weak self] results in                self?.movieDetailYoutubeLink = results.items[0]
+                receiveValue: { [weak self] results in
+                    self?.movieDetailYoutubeLink = results.items[0]
                     self?.movieDetailSubscription?.cancel()
             })
     }
@@ -49,5 +53,18 @@ class MovieDetailDataService {
                 self?.creditSubscription?.cancel()
             })
                 
+    }
+    
+    func getRecommendationMovie(with movieId: Int) {
+        guard let url = URL(string: "\(Constants.baseURL)/3/movie/\(movieId)/recommendations?api_key=\(Constants.API_KEY)&language=en-US&page=1") else { return }
+        recommendationSubscription = NetworkingManager.download(url: url)
+            .decode(type: MovieResponse.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .sink(
+                receiveCompletion: NetworkingManager.handleCompletion,
+                receiveValue: { [weak self] results in
+                    self?.recommendations = results.results
+                self?.recommendationSubscription?.cancel()
+            })
     }
 }

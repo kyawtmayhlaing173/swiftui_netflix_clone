@@ -13,6 +13,7 @@ class NetflixDetailsViewModel: ObservableObject {
     @Published var youtubeId: String?
     @Published var movieCredit: [Cast] = []
     @Published var movie: Movie
+    @Published var recommendations: [Movie] = []
     let searchQuery: String
     
     
@@ -28,6 +29,7 @@ class NetflixDetailsViewModel: ObservableObject {
         )
         getMovie()
         getCredits()
+        getRecommendations(with: movie.id)
     }
     
     func getMovie() {
@@ -48,7 +50,15 @@ class NetflixDetailsViewModel: ObservableObject {
                 self?.movieCredit = casts
             }
             .store(in: &cancellables)
-        
+    }
+    
+    func getRecommendations(with movieId: Int) {
+        movieDetailService.$recommendations
+            .combineLatest($recommendations)
+            .sink { [weak self] (recommendations, _) in
+                self?.recommendations = recommendations
+            }
+            .store(in: &cancellables)
     }
 }
 

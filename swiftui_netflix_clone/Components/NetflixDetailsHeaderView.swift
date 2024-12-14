@@ -17,7 +17,8 @@ struct NetflixDetailsHeaderView: View {
 
     var body: some View {
         ZStack {
-            YoutubeView(videoId: youtubeId ?? "")
+            NetflixTrailerView(videoId: youtubeId ?? "")
+                .frame(height: 200)
             
             VStack {
                 HStack(alignment: .top) {

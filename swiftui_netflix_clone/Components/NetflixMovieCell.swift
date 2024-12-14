@@ -31,13 +31,6 @@ struct NetflixMovieCell: View {
             ZStack(alignment: .bottom) {
                 ImageLoaderView(urlString: "https://image.tmdb.org/t/p/w500\(imageName ?? "")")
                 VStack(spacing: 0) {
-                    if let title, let firstWord = title.components(separatedBy: " ").first {
-                        Text(firstWord)
-                            .font(.subheadline)
-                            .fontWeight(.medium)
-                            .lineLimit(1)
-                    }
-                    
                     Text("Recently Added")
                         .padding(.horizontal, 4)
                         .padding(.vertical, 2)
@@ -68,7 +61,8 @@ struct NetflixMovieCell: View {
                 )
             }
             .cornerRadius(4)
-            .frame(width: width, height: height)
+            .frame(height: height)
+            .frame(maxWidth: width)
         }
         .foregroundStyle(.netflixWhite)
     }

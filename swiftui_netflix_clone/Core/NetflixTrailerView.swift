@@ -9,7 +9,7 @@ import WebKit
 import SwiftUI
 
 
-struct YoutubeView: UIViewRepresentable {
+struct NetflixTrailerView: UIViewRepresentable {
     let videoId: String
     
     func makeUIView(context: Context) -> WKWebView {

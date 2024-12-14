@@ -13,10 +13,11 @@ struct NetflixHeroCell: View {
     var imageName: String? = Constants.randomImage
     var isNetflixFilm: Bool = true
     var title: String?
-    var categories: [String] = ["Raunchy", "Romantic", "Comedy"]
+    var categories: [Int] = []
     var onBackgroundPressed: (() -> Void)? = nil
     var onPlayPressed: (() -> Void)? = nil
     var onMyListPressed: (() -> Void)? = nil
+    var homeVM: NetflixHomeViewModel
 
     var body: some View {
         ZStack(alignment: .bottom) {
@@ -50,7 +51,7 @@ struct NetflixHeroCell: View {
                 
                 HStack(spacing: 8) {
                     ForEach(categories, id: \.self) { category in
-                        Text(category)
+                        Text(homeVM.getGenresNameById(id: category))
                             .font(.callout)
                         
                         if category != categories.last {
@@ -111,6 +112,6 @@ struct NetflixHeroCell: View {
 }
 
 #Preview {
-    NetflixHeroCell()
+    NetflixHeroCell(homeVM: DeveloperPreview().homeVM)
         .padding(40)
 }
