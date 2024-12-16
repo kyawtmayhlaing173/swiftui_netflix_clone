@@ -8,7 +8,7 @@
 import SwiftUI
 import SwiftfulRouting
 
-enum Trending {
+enum MediaType {
     case tv, movie
     
     var title: String {
@@ -140,7 +140,7 @@ struct NetflixHomeView: View {
     func getTrendingMoviesByCategory(selectedFilter: FilterModel?) {
         guard let filter = selectedFilter else { return }
         homeVM.getTrendingMovies(
-            category: filter.title.lowercased().contains("tv") ? Trending.tv: Trending.movie
+            category: filter.title.lowercased().contains("tv") ? MediaType.tv: MediaType.movie
         )
     }
     

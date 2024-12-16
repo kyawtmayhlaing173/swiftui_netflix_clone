@@ -12,7 +12,7 @@ class NetflixDetailsViewModel: ObservableObject {
     @Published var searchResult: VideoElement?
     @Published var youtubeId: String?
     @Published var movieCredit: [Cast] = []
-    @Published var movie: Movie
+    @Published var movie: MovieDetailResponse?
     @Published var recommendations: [Movie] = []
     let searchQuery: String
     
@@ -20,19 +20,26 @@ class NetflixDetailsViewModel: ObservableObject {
     private let movieDetailService: MovieDetailDataService
     private var cancellables = Set<AnyCancellable>()
     
-    init(searchQuery: String, movie: Movie) {
+    init(searchQuery: String, movieId: Int, mediaType: String) {
         self.searchQuery = searchQuery
-        self.movie = movie
         movieDetailService = MovieDetailDataService(
             searchQuery: "\(searchQuery) trailer",
-            movieId: movie.id
+            movieId: movieId,
+            mediaType: mediaType
         )
         getMovie()
         getCredits()
-        getRecommendations(with: movie.id)
+        getRecommendations(with: movieId)
     }
     
     func getMovie() {
+        movieDetailService.$movieDetail
+            .combineLatest($movie)
+            .sink { [weak self] (movie, _) in
+                self?.movie = movie
+            }
+            .store(in: &cancellables)
+        
         movieDetailService.$movieDetailYoutubeLink
             .combineLatest($searchResult)
             .sink { [weak self] (videoElement, _) in

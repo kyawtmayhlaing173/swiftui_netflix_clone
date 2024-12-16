@@ -10,14 +10,15 @@ import SwiftUI
 struct NetflixDetailsView: View {
     @State private var isMyList: Bool = false
     @StateObject private var detailVM: NetflixDetailsViewModel
-    var movie: Movie
+    var mediaType: String
         
     init(movie: Movie) {
-        self.movie = movie
+        self.mediaType = movie.media_type ?? ""
         self._detailVM = StateObject(
             wrappedValue: NetflixDetailsViewModel(
                 searchQuery: movie.original_name ?? movie.original_title ?? "",
-                movie: movie
+                movieId: movie.id,
+                mediaType: movie.media_type ?? MediaType.movie.title
             )
         )
     }
@@ -28,7 +29,10 @@ struct NetflixDetailsView: View {
     }
     
     var body: some View {
-        let year = DateManager().getYearFromDateString(dateString: movie.release_date)
+        let released_date = (mediaType == MediaType.tv.title ? detailVM.movie?.first_air_date : detailVM.movie?.release_date) ?? nil
+        let year = DateManager().getYearFromDateString(dateString: released_date)
+        let currentYear = DateManager().getCurrentYear()
+        let seasonCount = (mediaType == MediaType.tv.title ? detailVM.movie?.number_of_seasons : 0) ?? 0
 
         ZStack {
             Color.netflixBlack.ignoresSafeArea()
@@ -38,20 +42,21 @@ struct NetflixDetailsView: View {
                 ScrollView(.vertical) {
                     VStack(alignment: .leading, spacing: 16) {
                         NetflixDetailsProductView(
-                            title: movie.original_name ?? movie.original_title ?? "",
-                            isNew: true,
+                            title: detailVM.movie?.original_title ?? "",
+                            isNew: currentYear == year,
                             yearReleased: String(year),
-                            seasonCount: 2,
+                            seasonCount: seasonCount,
                             hasClosedCaptions: true,
                             isTopTen: 3,
-                            descriptionText: movie.overview,
+                            descriptionText: detailVM.movie?.overview,
                             onPlayPressed: {
                                 
                             },
                             onDownloadPressed: {
                                 
                             },
-                            credits: detailVM.movieCredit
+                            credits: detailVM.movieCredit,
+                            runtime: detailVM.movie?.runtime ?? 0
                         )
                         HStack(spacing: 32) {
                             MyListButton(

@@ -32,7 +32,7 @@ class MovieDataService {
             })
     }
     
-    func getTrendingMovies(category: Trending) {
+    func getTrendingMovies(category: MediaType) {
         guard let url = URL(string: "\(Constants.baseURL)/3/trending/\(category.title)/day?api_key=\(Constants.API_KEY)") else { return }
         movieSubscription = NetworkingManager.download(url: url)
             .decode(type: MovieResponse.self, decoder: JSONDecoder())

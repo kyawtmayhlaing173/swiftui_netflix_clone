@@ -18,8 +18,10 @@ struct NetflixDetailsProductView: View {
     let descriptionText: String
     var creditText: String? = ""
     var credits: [Cast] = []
+    let runtime: Int
     let onPlayPressed: (() -> Void)?
     let onDownloadPressed: (() -> Void)?
+    
     @Environment(\.router) var router
 
     init(
@@ -32,7 +34,8 @@ struct NetflixDetailsProductView: View {
         descriptionText: String? = "",
         onPlayPressed: (() -> Void)? = nil,
         onDownloadPressed: (() -> Void)? = nil,
-        credits: [Cast]
+        credits: [Cast],
+        runtime: Int = 0
     ) {
         self.title = title
         self.isNew = isNew ?? false
@@ -45,6 +48,7 @@ struct NetflixDetailsProductView: View {
         self.onPlayPressed = onPlayPressed
         self.onDownloadPressed = onDownloadPressed
         self.credits = credits
+        self.runtime = runtime
     }
     
     var body: some View {
@@ -59,7 +63,11 @@ struct NetflixDetailsProductView: View {
                         .foregroundStyle(Color.green)
                 }
                 Text(yearReleased)
-                Text("\(seasonCount) Seasons")
+                if (seasonCount > 0) {
+                    Text("\(seasonCount) \(seasonCount > 1 ? "Seasons" : "Season")")
+                } else {
+                    Text("\(DateManager().getFormattedShowTime(with: runtime))")
+                }
                 
                 if hasClosedCaptions {
                     Image(systemName: "captions.bubble")

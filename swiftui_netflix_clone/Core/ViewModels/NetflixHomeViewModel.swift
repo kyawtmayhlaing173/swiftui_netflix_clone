@@ -56,7 +56,7 @@ class NetflixHomeViewModel: ObservableObject {
         return selectedGenre?.name ?? ""
     }
     
-    func getTrendingMovies(category: Trending){
+    func getTrendingMovies(category: MediaType){
         movieDataService.getTrendingMovies(category: category)
     }
     
