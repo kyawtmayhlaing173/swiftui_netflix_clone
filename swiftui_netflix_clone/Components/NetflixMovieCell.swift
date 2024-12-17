@@ -29,7 +29,7 @@ struct NetflixMovieCell: View {
                     .offset(x: 20, y: 20)
             }
             ZStack(alignment: .bottom) {
-                ImageLoaderView(urlString: "https://image.tmdb.org/t/p/w500\(imageName ?? "")")
+                ImageLoaderView(urlString: "\(Constants.imageURL)\(imageName ?? "")")
                 VStack(spacing: 0) {
                     Text("Recently Added")
                         .padding(.horizontal, 4)

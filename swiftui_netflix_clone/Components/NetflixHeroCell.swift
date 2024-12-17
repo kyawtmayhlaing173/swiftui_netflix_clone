@@ -21,7 +21,7 @@ struct NetflixHeroCell: View {
 
     var body: some View {
         ZStack(alignment: .bottom) {
-            ImageLoaderView(urlString: "https://image.tmdb.org/t/p/w500\(imageName ?? "")")
+            ImageLoaderView(urlString: "\(Constants.imageURL)\(imageName ?? "")")
                 .onTapGesture {
                     onBackgroundPressed?()
                 }

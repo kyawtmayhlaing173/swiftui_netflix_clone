@@ -14,10 +14,13 @@ class MovieDetailDataService {
     @Published var movieDetailYoutubeLink: VideoElement?
     @Published var movieCasts: [Cast] = []
     @Published var recommendations: [Movie] = []
+    @Published var episodes: [Episode] = []
+    
     var movieDetailSubscription: AnyCancellable?
     var movieTrailerSubscription: AnyCancellable?
     var creditSubscription: AnyCancellable?
     var recommendationSubscription: AnyCancellable?
+    var episodeSubscription: AnyCancellable?
     let movieId: Int
     let mediaType: String
     
@@ -27,8 +30,9 @@ class MovieDetailDataService {
         self.mediaType = mediaType
         getMovieDetail(with: movieId, mediaType: mediaType)
         getMovieTrailer(with: searchQuery)
-        getMovieCredit(with: movieId)
-        getRecommendationMovie(with: movieId)
+        getMovieCredit(with: movieId, mediaType: mediaType)
+        getRecommendationMovie(with: movieId, mediaType: mediaType)
+        getEpisodes(episodeNo: 1, movieId: movieId)
     }
     
     func getMovieDetail(with movieId: Int, mediaType: String) {
@@ -57,8 +61,8 @@ class MovieDetailDataService {
             })
     }
     
-    func getMovieCredit(with movieId: Int) {
-        guard let url = URL(string: "\(Constants.baseURL)/3/movie/\(movieId)/credits?api_key=\(Constants.API_KEY)") else { return }
+    func getMovieCredit(with movieId: Int, mediaType: String) {
+        guard let url = URL(string: "\(Constants.baseURL)/3/\(mediaType)/\(movieId)/credits?api_key=\(Constants.API_KEY)") else { return }
         creditSubscription = NetworkingManager.download(url: url)
             .decode(type: Credits.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
@@ -71,8 +75,8 @@ class MovieDetailDataService {
                 
     }
     
-    func getRecommendationMovie(with movieId: Int) {
-        guard let url = URL(string: "\(Constants.baseURL)/3/movie/\(movieId)/recommendations?api_key=\(Constants.API_KEY)&language=en-US&page=1") else { return }
+    func getRecommendationMovie(with movieId: Int, mediaType: String) {
+        guard let url = URL(string: "\(Constants.baseURL)/3/\(mediaType)/\(movieId)/recommendations?api_key=\(Constants.API_KEY)&language=en-US&page=1") else { return }
         recommendationSubscription = NetworkingManager.download(url: url)
             .decode(type: MovieResponse.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
@@ -81,6 +85,16 @@ class MovieDetailDataService {
                 receiveValue: { [weak self] results in
                     self?.recommendations = results.results
                 self?.recommendationSubscription?.cancel()
+            })
+    }
+    
+    func getEpisodes(episodeNo: Int, movieId: Int) {
+        guard let url = URL(string: "\(Constants.baseURL)/3/tv/\(movieId)/season/\(episodeNo)?api_key=\(Constants.API_KEY)") else { return }
+        episodeSubscription = NetworkingManager.download(url: url)
+            .decode(type: SeasonResponse.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: NetworkingManager.handleCompletion, receiveValue: { [weak self] results in
+                self?.episodes = results.episodes;
             })
     }
 }

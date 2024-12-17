@@ -8,19 +8,13 @@
 import SwiftUI
 
 enum MovieDetailTab: CaseIterable {
-    case more, trailers
-    
-    var title: String {
-        switch self {
-        case .more: return "More Like This"
-        case .trailers: return "Trailers & More"
-        }
-    }
+    case more, trailers, episodes
 }
 
 struct NetflixDetailMoreSection: View {
     @State private var selectedTab = MovieDetailTab.more
     @ObservedObject var detailVM: NetflixDetailsViewModel
+    var mediaType: String
     @Environment(\.router) var router
 
     let layout = [
@@ -39,14 +33,24 @@ struct NetflixDetailMoreSection: View {
         ScrollView {
             VStack(alignment: .leading, spacing: 0) {
                 HStack(spacing: 16) {
-                    ForEach(MovieDetailTab.allCases, id: \.self) { tab in
+                    if(mediaType == "tv") {
                         CustomTabBar(
-                            isSelected: selectedTab == tab,
-                            title: tab.title
-                        )
-                        .onTapGesture {
-                            selectedTab = tab
+                            isSelected: selectedTab == MovieDetailTab.episodes,
+                            title: "Episodes") {
+                                selectedTab = MovieDetailTab.episodes
+                            }
+                    }
+                    CustomTabBar(
+                        isSelected: selectedTab == MovieDetailTab.more,
+                        title: "More Like This") {
+                            selectedTab = MovieDetailTab.more
                         }
+                    if(mediaType == "movie") {
+                        CustomTabBar(
+                            isSelected: selectedTab == MovieDetailTab.trailers,
+                            title: "Trailers & More") {
+                                selectedTab = MovieDetailTab.trailers
+                            }
                     }
                 }
                 .padding(.bottom)
@@ -69,9 +73,15 @@ struct NetflixDetailMoreSection: View {
                     NetflixTrailerView(videoId: detailVM.youtubeId ?? "")
                         .frame(height: 200)
                 }
+                else if (selectedTab == MovieDetailTab.episodes) {
+                    NetflixEpisodesView(detailVM: detailVM)
+                }
             }
-            .padding()
+            .padding(.horizontal)
             .foregroundStyle(Color.netflixWhite)
+        }
+        .onAppear {
+            selectedTab = mediaType == "tv" ? MovieDetailTab.episodes : MovieDetailTab.more
         }
     }
 }
@@ -79,6 +89,7 @@ struct NetflixDetailMoreSection: View {
 struct CustomTabBar: View {
     var isSelected: Bool
     var title: String
+    var onTabPressed: (() -> Void)?
     
     @State private var textWidth: CGFloat = 0
 
@@ -100,15 +111,30 @@ struct CustomTabBar: View {
                )
        }
        .foregroundStyle(Color.netflixWhite)
+       .onTapGesture {
+           onTabPressed?()
+       }
     }
 }
 
 #Preview {
+    // For Movie
     ZStack {
         Color.netflixBlack.ignoresSafeArea()
         NetflixDetailMoreSection(
-            detailVM: DeveloperPreview().detailsVM
+            detailVM: DeveloperPreview().detailsVMForMovie,
+            mediaType: MediaType.movie.title
         )
     }
-    
+}
+
+#Preview {
+    // For Tv Show
+    ZStack {
+        Color.netflixBlack.ignoresSafeArea()
+        NetflixDetailMoreSection(
+            detailVM: DeveloperPreview().detailsVMForTvShow,
+            mediaType: MediaType.tv.title
+        )
+    }
 }

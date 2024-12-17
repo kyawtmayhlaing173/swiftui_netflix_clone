@@ -21,6 +21,7 @@ struct Movie: Codable, Identifiable, Hashable {
     let overview: String?
     let vote_count: Int
     let release_date: String?
+    let first_air_date: String?
     let vote_average: Double?
     let genre_ids: [Int]
 }

@@ -42,7 +42,7 @@ struct NetflixDetailsView: View {
                 ScrollView(.vertical) {
                     VStack(alignment: .leading, spacing: 16) {
                         NetflixDetailsProductView(
-                            title: detailVM.movie?.original_title ?? "",
+                            title: detailVM.movie?.original_title ?? detailVM.movie?.original_name ?? "",
                             isNew: currentYear == year,
                             yearReleased: String(year),
                             seasonCount: seasonCount,
@@ -69,7 +69,10 @@ struct NetflixDetailsView: View {
                             ShareButton()
                         }
                         .padding(.leading, 32)
-                        NetflixDetailMoreSection(detailVM: detailVM)
+                        NetflixDetailMoreSection(
+                            detailVM: detailVM,
+                            mediaType: mediaType
+                        )
                     }
                 }
             }
@@ -81,5 +84,11 @@ struct NetflixDetailsView: View {
 #Preview {
     NetflixDetailsView(
         movie: DeveloperPreview().movie
+    )
+}
+
+#Preview {
+    NetflixDetailsView(
+        movie: DeveloperPreview().tvShow
     )
 }

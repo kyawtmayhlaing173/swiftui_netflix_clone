@@ -14,6 +14,7 @@ class NetflixDetailsViewModel: ObservableObject {
     @Published var movieCredit: [Cast] = []
     @Published var movie: MovieDetailResponse?
     @Published var recommendations: [Movie] = []
+    @Published var episodes: [Episode] = []
     let searchQuery: String
     
     
@@ -30,6 +31,9 @@ class NetflixDetailsViewModel: ObservableObject {
         getMovie()
         getCredits()
         getRecommendations(with: movieId)
+        if (mediaType == "tv") {
+            getEpisodes(with: movieId)
+        }
     }
     
     func getMovie() {
@@ -64,6 +68,15 @@ class NetflixDetailsViewModel: ObservableObject {
             .combineLatest($recommendations)
             .sink { [weak self] (recommendations, _) in
                 self?.recommendations = recommendations
+            }
+            .store(in: &cancellables)
+    }
+    
+    func getEpisodes(with movieId: Int) {
+        movieDetailService.$episodes
+            .combineLatest($episodes)
+            .sink { [weak self] (episodes, _) in
+                self?.episodes = episodes
             }
             .store(in: &cancellables)
     }
