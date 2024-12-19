@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NetflixEpisodesView: View {
     @ObservedObject var detailVM: NetflixDetailsViewModel
+    @Environment(\.router) var router
 
     var body: some View {
         ScrollView{
@@ -17,8 +18,12 @@ struct NetflixEpisodesView: View {
                     .font(.title3)
                 Spacer()
                 Image(systemName: "info.circle.fill")
+                    .onTapGesture {
+                        onInfoPressed()
+                    }
             }
             .foregroundStyle(.netflixWhite)
+            
             VStack {
                 ForEach(Array(detailVM.episodes.enumerated()), id: \.offset) { (index, episode) in
                     NetflixEpisodeCell(
@@ -30,6 +35,16 @@ struct NetflixEpisodesView: View {
                 }
             }
             .foregroundStyle(.netflixWhite)
+        }
+    }
+    
+    func onInfoPressed() {
+        router.showResizableSheet(sheetDetents: [.height(250)], selection: nil, showDragIndicator: false) { _ in
+            NetflixEpisodeInfo(
+                detailVM: detailVM,
+                title: detailVM.movie?.original_name ?? detailVM.movie?.original_title ?? "") {
+                    router.dismissEnvironment()
+                }
         }
     }
 }

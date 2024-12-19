@@ -87,6 +87,7 @@ struct NetflixHomeView: View {
                 categoryRows
             }
         }
+        .scrollIndicators(.hidden)
         .onScrollGeometryChange(for: Double.self) { geo in
             geo.contentOffset.y
         } action: { oldValue, newValue in

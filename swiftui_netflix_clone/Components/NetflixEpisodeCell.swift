@@ -16,16 +16,22 @@ struct NetflixEpisodeCell: View {
     var body: some View {
         VStack(alignment: .leading, spacing: 0) {
             HStack {
-                if let imageUrl {
-                    ZStack {
+                ZStack {
+                    if let imageUrl {
                         ImageLoaderView(urlString: "\(Constants.imageURL)\(imageUrl)")
                             .frame(width: 120, height: 80)
                             .cornerRadius(10)
-                        Image(systemName: "play.circle")
-                            .font(.system(size: 30))
+                    } else {
+                        Rectangle()
+                            .foregroundStyle(Color.netflixLightGray)
+                            .frame(width: 120, height: 80)
+                            .cornerRadius(10)
                     }
-                    .padding(.trailing)
+                   
+                    Image(systemName: "play.circle")
+                        .font(.system(size: 30))
                 }
+                .padding(.trailing)
                 
                 VStack(alignment: .leading, spacing: 0) {
                     if let episodeNo {

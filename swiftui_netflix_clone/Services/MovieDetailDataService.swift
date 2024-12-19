@@ -15,12 +15,16 @@ class MovieDetailDataService {
     @Published var movieCasts: [Cast] = []
     @Published var recommendations: [Movie] = []
     @Published var episodes: [Episode] = []
+    @Published var episodeVideos: EpisodeVideo?
+    @Published var rating: [Rating] = []
     
     var movieDetailSubscription: AnyCancellable?
     var movieTrailerSubscription: AnyCancellable?
     var creditSubscription: AnyCancellable?
     var recommendationSubscription: AnyCancellable?
     var episodeSubscription: AnyCancellable?
+    var episodeVideosSubscription: AnyCancellable?
+    var ratingSubscription: AnyCancellable?
     let movieId: Int
     let mediaType: String
     
@@ -32,7 +36,8 @@ class MovieDetailDataService {
         getMovieTrailer(with: searchQuery)
         getMovieCredit(with: movieId, mediaType: mediaType)
         getRecommendationMovie(with: movieId, mediaType: mediaType)
-        getEpisodes(episodeNo: 1, movieId: movieId)
+        getEpisodes(seasonNo: 1, movieId: movieId)
+        getContentRating()
     }
     
     func getMovieDetail(with movieId: Int, mediaType: String) {
@@ -88,13 +93,43 @@ class MovieDetailDataService {
             })
     }
     
-    func getEpisodes(episodeNo: Int, movieId: Int) {
-        guard let url = URL(string: "\(Constants.baseURL)/3/tv/\(movieId)/season/\(episodeNo)?api_key=\(Constants.API_KEY)") else { return }
+    func getEpisodes(seasonNo: Int, movieId: Int) {
+        guard let url = URL(string: "\(Constants.baseURL)/3/tv/\(movieId)/season/\(seasonNo)?api_key=\(Constants.API_KEY)") else { return }
         episodeSubscription = NetworkingManager.download(url: url)
             .decode(type: SeasonResponse.self, decoder: JSONDecoder())
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: NetworkingManager.handleCompletion, receiveValue: { [weak self] results in
                 self?.episodes = results.episodes;
+            })
+    }
+    
+    func getContentRating() {
+        guard let url = URL(string: "\(Constants.baseURL)/3/tv/222766/content_ratings?api_key=\(Constants.API_KEY)") else { return }
+        ratingSubscription = NetworkingManager.download(url: url)
+            .decode(type: ContentRatingResponse.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: NetworkingManager.handleCompletion, receiveValue: { [weak self] results in
+                self?.rating = results.results
+            })
+    }
+    
+    func getEpisodeVideo(
+        movieId: Int,
+        seasonNo: Int,
+        episodeNo: Int,
+        completion: @escaping ([EpisodeVideo]) -> Void
+    ) {
+        guard let url = URL(string: "\(Constants.baseURL)/3/tv/\(movieId)/season/\(seasonNo)/episode/\(episodeNo)/videos?api_key=\(Constants.API_KEY)") else {
+            completion([])
+            return
+        }
+
+        episodeVideosSubscription = NetworkingManager.download(url: url)
+            .decode(type: EpisodeVideoResponse.self, decoder: JSONDecoder())
+            .receive(on: DispatchQueue.main)
+            .sink(receiveCompletion: NetworkingManager.handleCompletion, receiveValue: { episodes in
+                print("⛔️ \(episodes.results) \(url)")
+                completion(episodes.results)
             })
     }
 }
