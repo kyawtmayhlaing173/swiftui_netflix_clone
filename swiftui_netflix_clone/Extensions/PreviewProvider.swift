@@ -52,5 +52,11 @@ class DeveloperPreview {
         movieId: 222766,
         mediaType: MediaType.tv.title
     )
+    
+    let detailsVMForTVShowWithMultipleSeasons = NetflixDetailsViewModel(
+        searchQuery: "Yellowstone",
+        movieId: 73586,
+        mediaType: MediaType.tv.title
+    )
 
 }

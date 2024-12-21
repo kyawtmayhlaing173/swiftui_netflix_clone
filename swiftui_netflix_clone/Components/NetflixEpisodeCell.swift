@@ -45,7 +45,7 @@ struct NetflixEpisodeCell: View {
                     }
                 }
                 Spacer()
-                Image(systemName: "arrow.down")
+                Image(systemName: "arrow.down.to.line")
             }
             .padding(.bottom, 4)
             

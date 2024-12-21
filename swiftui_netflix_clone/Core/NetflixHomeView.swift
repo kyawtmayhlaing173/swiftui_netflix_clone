@@ -124,7 +124,7 @@ struct NetflixHomeView: View {
                     .onTapGesture {
                         
                     }
-                Image(systemName: "arrow.down")
+                Image(systemName: "arrow.down.to.line")
                     .onTapGesture {
                         
                     }

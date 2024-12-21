@@ -22,7 +22,7 @@ class NetflixDetailsViewModel: ObservableObject {
     private let movieDetailService: MovieDetailDataService
     private var cancellables = Set<AnyCancellable>()
     
-    init(searchQuery: String, movieId: Int, mediaType: String) {
+    init(searchQuery: String, movieId: Int, mediaType: String, seasonNo: Int = 1) {
         self.searchQuery = searchQuery
         movieDetailService = MovieDetailDataService(
             searchQuery: "\(searchQuery) trailer",
@@ -31,7 +31,7 @@ class NetflixDetailsViewModel: ObservableObject {
         )
         setupSubscriptions()
         if (mediaType == "tv") {
-            getEpisodes(with: movieId)
+            getEpisodes(with: movieId, seasonNo: seasonNo)
         }
     }
     
@@ -100,8 +100,8 @@ class NetflixDetailsViewModel: ObservableObject {
         }
     }
     
-    func getEpisodes(with movieId: Int) {
-        movieDetailService.getEpisodes(seasonNo: 1, movieId: movieId)
+    func getEpisodes(with movieId: Int, seasonNo: Int) {
+        movieDetailService.getEpisodes(seasonNo: seasonNo, movieId: movieId)
     }
     
     private func fetchVideoKey(for episodes: [Episode]) {
