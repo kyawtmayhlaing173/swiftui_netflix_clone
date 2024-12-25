@@ -15,6 +15,13 @@ class NetflixHomeViewModel: ObservableObject {
     private let movieDataService = MovieDataService()
     private var cancellables = Set<AnyCancellable>()
     
+    private var filteredCategory: MediaType? = nil
+    private var filteredGenre: Genre? = nil
+    
+    private var isLoading = false
+    private var currentPage = 1
+    private var totalPages = 0
+    
     init() {
         addSubscribers()
     }
@@ -24,7 +31,17 @@ class NetflixHomeViewModel: ObservableObject {
             .combineLatest(movieDataService.$movies)
             .sink { [weak self] (_, returnedMovie) in
                 guard let self = self else { return }
-                self.allMovies = returnedMovie.results
+                totalPages = returnedMovie?.total_pages ?? 1
+                let movies = returnedMovie?.results ?? []
+                
+                if (currentPage == 1) {
+                    self.allMovies = []
+                    self.allMovies = movies
+                } else {
+                    self.allMovies.append(contentsOf: movies)
+                }
+                
+                print("Appended Array is \(self.allMovies.count) \(currentPage) \(totalPages)")
             }
             .store(in: &cancellables)
         
@@ -56,15 +73,38 @@ class NetflixHomeViewModel: ObservableObject {
         return selectedGenre?.name ?? ""
     }
     
-    func getTrendingMovies(category: MediaType){
-        movieDataService.getTrendingMovies(category: category)
+    func getTrendingMovies(category: MediaType) {
+        currentPage = 1
+        filteredCategory = category
+        filteredGenre = nil
+        movieDataService.getTrendingMovies(category: category, index: 1)
     }
     
     func getUpcomingMovies() {
-        movieDataService.getMovies()
+        currentPage = 1
+        filteredCategory = nil
+        filteredGenre = nil
+        movieDataService.getMovies(index: currentPage)
     }
     
-    func getMovieByGenre(genreId: Int) {
-        movieDataService.getMovieByGenres(genreId: genreId)
+    func getMovieByGenre(genre: Genre) {
+        currentPage = 1
+        filteredCategory = nil
+        filteredGenre = genre
+        movieDataService.getMovieByGenres(genreId: genre.id, index: currentPage)
+    }
+    
+    func getMoreDataIfNeeded() {
+        currentPage = currentPage + 1;
+        print("⛔️ Current page is \(currentPage)")
+        if (totalPages > currentPage) {
+            if (filteredCategory == MediaType.movie || filteredCategory == MediaType.tv) {
+                movieDataService.getTrendingMovies(category: filteredCategory!, index: currentPage)
+            } else if (filteredGenre != nil){
+                movieDataService.getMovieByGenres(genreId: filteredGenre!.id, index: currentPage)
+            } else if (filteredCategory == nil) {
+                movieDataService.getMovies(index: currentPage)
+            }
+        }
     }
 }

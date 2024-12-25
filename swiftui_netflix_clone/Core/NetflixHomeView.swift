@@ -107,8 +107,8 @@ struct NetflixHomeView: View {
         }
     }
     
-    private func onCategoriesPressed(genreId: Int) {
-        homeVM.getMovieByGenre(genreId: genreId)
+    private func onCategoriesPressed(genre: Genre) {
+        homeVM.getMovieByGenre(genre: genre)
     }
     
     private var header: some View {
@@ -168,7 +168,7 @@ struct NetflixHomeView: View {
                                 NetflixGenresList(
                                     genres: homeVM.genres,
                                     onGenrePressed: { genre in
-                                        onCategoriesPressed(genreId: genre.id)
+                                        onCategoriesPressed(genre: genre)
                                         selectedCategory = genre.name
                                     },
                                     onXMarkPressed: {
@@ -216,7 +216,8 @@ struct NetflixHomeView: View {
 
                     ScrollView(.horizontal) {
                         LazyHStack(spacing: 16) {
-                            ForEach(Array(homeVM.allMovies.enumerated()), id: \.offset) {(index, product) in
+                            let displayedMovies = rowIndex == 1 ? Array(homeVM.allMovies.prefix(20)) : homeVM.allMovies
+                            ForEach(Array(displayedMovies.enumerated()), id: \.offset) {(index, product) in
                                 NetflixMovieCell(
                                     imageName: product.poster_path,
                                     title: product.title,
@@ -225,6 +226,12 @@ struct NetflixHomeView: View {
                                 )
                                 .onTapGesture {
                                     onMoviePressed(movie: product)
+                                }
+                                if (product == homeVM.allMovies.last) {
+                                    Color.clear
+                                        .onAppear {
+                                            homeVM.getMoreDataIfNeeded()
+                                        }
                                 }
                             }
                         }
