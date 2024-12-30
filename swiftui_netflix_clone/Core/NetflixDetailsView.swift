@@ -9,6 +9,7 @@ import SwiftUI
 
 struct NetflixDetailsView: View {
     @State private var isMyList: Bool = false
+    @State private var shouldPlay: Bool = false
     @StateObject private var detailVM: NetflixDetailsViewModel
     var mediaType: String
         
@@ -38,7 +39,7 @@ struct NetflixDetailsView: View {
             Color.netflixBlack.ignoresSafeArea()
             Color.netflixDarkGray.opacity(0.3).ignoresSafeArea()
             VStack(alignment: .leading, spacing: 0) {
-                NetflixDetailsHeaderView(youtubeId: detailVM.youtubeId)
+                NetflixDetailsHeaderView(youtubeId: detailVM.youtubeId, shouldPlay: $shouldPlay)
                 ScrollView(.vertical) {
                     VStack(alignment: .leading, spacing: 16) {
                         NetflixDetailsProductView(
@@ -50,7 +51,7 @@ struct NetflixDetailsView: View {
                             isTopTen: 3,
                             descriptionText: detailVM.movie?.overview,
                             onPlayPressed: {
-                                
+                                shouldPlay = !shouldPlay
                             },
                             onDownloadPressed: {
                                 

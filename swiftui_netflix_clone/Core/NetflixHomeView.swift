@@ -80,6 +80,9 @@ struct NetflixHomeView: View {
                         onBackgroundPressed: {
                             onMoviePressed(movie: movies[0])
                         },
+                        onPlayPressed: {
+                            onMoviePressed(movie: movies[0])
+                        },
                         homeVM: homeVM
                     )
                         .padding(.horizontal, 32)
@@ -234,6 +237,7 @@ struct NetflixHomeView: View {
                                         }
                                 }
                             }
+                            
                         }
                     }
                     .scrollIndicators(.hidden)
@@ -243,7 +247,13 @@ struct NetflixHomeView: View {
             .foregroundStyle(.netflixWhite)
         }
     }
+}
 
+extension NetflixHomeView {
+    var progressView: some View {
+        ProgressView()
+            .tint(Color.netflixLightGray)
+    }
 }
 
 #Preview {

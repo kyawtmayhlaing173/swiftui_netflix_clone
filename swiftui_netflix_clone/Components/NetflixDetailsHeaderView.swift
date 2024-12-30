@@ -14,10 +14,11 @@ struct NetflixDetailsHeaderView: View {
     var onXMarkPressed: (() -> Void)? = nil
     var youtubeId: String?
     @Environment(\.router) var router
+    @Binding var shouldPlay: Bool
 
     var body: some View {
         ZStack {
-            NetflixTrailerView(videoId: youtubeId ?? "")
+            NetflixTrailerView(videoId: youtubeId ?? "", shouldPlay: $shouldPlay)
                 .frame(height: 200)
             
             VStack {
@@ -48,8 +49,10 @@ struct NetflixDetailsHeaderView: View {
 }
 
 #Preview {
+    @Previewable
+    @State var shouldPlay = false
     ZStack {
         Color.netflixBlack.ignoresSafeArea()
-        NetflixDetailsHeaderView()
+        NetflixDetailsHeaderView(shouldPlay: $shouldPlay)
     }
 }

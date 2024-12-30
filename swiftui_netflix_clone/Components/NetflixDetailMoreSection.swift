@@ -16,6 +16,7 @@ struct NetflixDetailMoreSection: View {
     @ObservedObject var detailVM: NetflixDetailsViewModel
     var mediaType: String
     @Environment(\.router) var router
+    @State private var shouldPlay = false
 
     let layout = [
         GridItem(.flexible(maximum: 500), spacing: 16),
@@ -70,7 +71,7 @@ struct NetflixDetailMoreSection: View {
                     }
                 }
                 else if (selectedTab == MovieDetailTab.trailers) {
-                    NetflixTrailerView(videoId: detailVM.youtubeId ?? "")
+                    NetflixTrailerView(videoId: detailVM.youtubeId ?? "", shouldPlay: $shouldPlay)
                         .frame(height: 200)
                 }
                 else if (selectedTab == MovieDetailTab.episodes) {

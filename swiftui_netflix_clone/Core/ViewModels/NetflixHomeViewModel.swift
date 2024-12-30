@@ -40,6 +40,7 @@ class NetflixHomeViewModel: ObservableObject {
                 } else {
                     self.allMovies.append(contentsOf: movies)
                 }
+                isLoading = false
                 
                 print("Appended Array is \(self.allMovies.count) \(currentPage) \(totalPages)")
             }
@@ -97,7 +98,9 @@ class NetflixHomeViewModel: ObservableObject {
     func getMoreDataIfNeeded() {
         currentPage = currentPage + 1;
         print("⛔️ Current page is \(currentPage)")
+        if isLoading { return }
         if (totalPages > currentPage) {
+            isLoading = true
             if (filteredCategory == MediaType.movie || filteredCategory == MediaType.tv) {
                 movieDataService.getTrendingMovies(category: filteredCategory!, index: currentPage)
             } else if (filteredGenre != nil){

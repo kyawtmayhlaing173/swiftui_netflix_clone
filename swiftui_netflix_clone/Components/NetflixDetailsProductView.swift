@@ -99,7 +99,7 @@ struct NetflixDetailsProductView: View {
             .background(Color.netflixWhite)
             .cornerRadius(4)
             .onTapGesture {
-                
+                onPlayPressed?()
             }
             
             // Download Button
@@ -126,7 +126,6 @@ struct NetflixDetailsProductView: View {
                             .lineLimit(1)
                             .truncationMode(.tail)
                         Text("...more")
-                            
                     }
                     .font(.subheadline)
                     .foregroundStyle(.netflixLightGray)
@@ -142,8 +141,7 @@ struct NetflixDetailsProductView: View {
                         title: title
                     )
                 }
-            }
-                
+            }    
         }
         .padding(16)
         .scrollIndicators(.hidden)
