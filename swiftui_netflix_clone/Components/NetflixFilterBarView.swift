@@ -10,14 +10,29 @@ import SwiftUI
 struct FilterModel: Hashable, Equatable {
     let title: String
     let isDropdown: Bool
+    let iconName: String?
     
     static var mockArray: [FilterModel] {
         [
-            FilterModel(title: "TV Shows", isDropdown: false),
-            FilterModel(title: "Movies", isDropdown: false),
-            FilterModel(title: "Categories", isDropdown: true)
+            FilterModel(title: "TV Shows", isDropdown: false, iconName: nil),
+            FilterModel(title: "Movies", isDropdown: false, iconName: nil),
+            FilterModel(title: "Categories", isDropdown: true, iconName: nil)
         ]
     }
+    
+    static var newsMockArray: [FilterModel] {
+        [
+            FilterModel(
+                title: "Coming Soon",
+                isDropdown: false,
+                iconName: "🍿"
+            ),
+            FilterModel(title: "Everyone's Watching", isDropdown: false, iconName: "🔥"),
+            FilterModel(title: "Top 10 TV Shows", isDropdown: false, iconName: "📺"),
+            FilterModel(title: "Top 10 Movies", isDropdown: false, iconName: "🎬")
+        ]
+    }
+    
 }
 
 struct NetflixFilterBarView: View {
@@ -69,7 +84,7 @@ struct NetflixFilterBarView: View {
 }
 
 fileprivate struct NetflixFilterBarViewPreview: View {
-    @State private var filters = FilterModel.mockArray
+    @State private var filters = FilterModel.newsMockArray
     @State private var selectedFilter: FilterModel? = nil
     
     var body: some View {

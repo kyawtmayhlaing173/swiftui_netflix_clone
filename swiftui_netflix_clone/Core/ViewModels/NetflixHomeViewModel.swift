@@ -81,7 +81,7 @@ class NetflixHomeViewModel: ObservableObject {
         movieDataService.getTrendingMovies(category: category, index: 1)
     }
     
-    func getUpcomingMovies() {
+    func getTrendingMovies() {
         currentPage = 1
         filteredCategory = nil
         filteredGenre = nil

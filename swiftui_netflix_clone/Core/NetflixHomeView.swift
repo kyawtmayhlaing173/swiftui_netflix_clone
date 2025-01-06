@@ -204,7 +204,7 @@ struct NetflixHomeView: View {
     func clearGenreData() {
         selectedFilter = nil
         selectedCategory = nil
-        homeVM.getUpcomingMovies()
+        homeVM.getTrendingMovies()
     }
     
     private var categoryRows: some View {

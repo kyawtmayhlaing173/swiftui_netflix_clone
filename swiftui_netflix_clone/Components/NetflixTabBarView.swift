@@ -18,9 +18,9 @@ struct NetflixTabBarView: View {
                 .tabItem {
                     Label("Home", systemImage: "house")
                 }
-                Text("News & Hot")
+                NetflixNewsSectionView()
                     .tabItem {
-                        Label("News & Hot Section", systemImage: "play.rectangle.on.rectangle")
+                        Label("News & Hot", systemImage: "play.rectangle.on.rectangle")
                     }
                 Text("My Netflix")
                     .tabItem {
