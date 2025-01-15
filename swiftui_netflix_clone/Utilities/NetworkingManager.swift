@@ -7,6 +7,7 @@
 
 import Foundation
 import Combine
+import Alamofire
 
 class NetworkingManager {
     enum NetworkingError: LocalizedError {
@@ -24,16 +25,21 @@ class NetworkingManager {
     }
     
     static func download(url: URL) -> AnyPublisher<Data, Error> {
-        return URLSession.shared.dataTaskPublisher(for: url)
+        return AF.request(url)
+            .validate()
+            .publishData()
             .tryMap({ try handleURLResponse(output: $0, url: url)})
             .eraseToAnyPublisher()
     }
     
-    static func handleURLResponse(output: URLSession.DataTaskPublisher.Output, url: URL) throws -> Data {
-        guard let response = output.response as? HTTPURLResponse, response.statusCode >= 200 && response.statusCode < 300 else {
+    static func handleURLResponse(output: DataResponsePublisher<Data>.Output, url: URL) throws -> Data {
+        guard let response = output.response, response.statusCode >= 200 && response.statusCode < 300 else {
             throw NetworkingError.badURLResponse(url: url)
         }
-        return output.data
+        guard let data = output.data else {
+            throw NetworkingError.badURLResponse(url: url)
+        }
+        return data
     }
     
     static func handleCompletion(completion: Subscribers.Completion<Error>) {

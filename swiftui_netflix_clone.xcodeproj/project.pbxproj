@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		550032322CEF0F0A00511774 /* SDWebImageSwiftUI in Frameworks */ = {isa = PBXBuildFile; productRef = 550032312CEF0F0A00511774 /* SDWebImageSwiftUI */; };
 		5539F3BD2CF5DB1C00A0849E /* SwiftfulRouting in Frameworks */ = {isa = PBXBuildFile; productRef = 5539F3BC2CF5DB1C00A0849E /* SwiftfulRouting */; };
+		558C87212D2ED70200FC0EA7 /* Alamofire in Frameworks */ = {isa = PBXBuildFile; productRef = 558C87202D2ED70200FC0EA7 /* Alamofire */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -28,6 +29,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				558C87212D2ED70200FC0EA7 /* Alamofire in Frameworks */,
 				550032322CEF0F0A00511774 /* SDWebImageSwiftUI in Frameworks */,
 				5539F3BD2CF5DB1C00A0849E /* SwiftfulRouting in Frameworks */,
 			);
@@ -74,6 +76,7 @@
 			packageProductDependencies = (
 				550032312CEF0F0A00511774 /* SDWebImageSwiftUI */,
 				5539F3BC2CF5DB1C00A0849E /* SwiftfulRouting */,
+				558C87202D2ED70200FC0EA7 /* Alamofire */,
 			);
 			productName = swiftui_netflix_clone;
 			productReference = 5500320C2CEE2A7A00511774 /* swiftui_netflix_clone.app */;
@@ -106,6 +109,7 @@
 			packageReferences = (
 				550032302CEF0F0A00511774 /* XCRemoteSwiftPackageReference "SDWebImageSwiftUI" */,
 				5539F3BB2CF5DB1C00A0849E /* XCRemoteSwiftPackageReference "SwiftfulRouting" */,
+				558C871F2D2ED70200FC0EA7 /* XCRemoteSwiftPackageReference "Alamofire" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 5500320D2CEE2A7A00511774 /* Products */;
@@ -355,6 +359,14 @@
 				minimumVersion = 5.3.6;
 			};
 		};
+		558C871F2D2ED70200FC0EA7 /* XCRemoteSwiftPackageReference "Alamofire" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/Alamofire/Alamofire";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 5.10.2;
+			};
+		};
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
@@ -367,6 +379,11 @@
 			isa = XCSwiftPackageProductDependency;
 			package = 5539F3BB2CF5DB1C00A0849E /* XCRemoteSwiftPackageReference "SwiftfulRouting" */;
 			productName = SwiftfulRouting;
+		};
+		558C87202D2ED70200FC0EA7 /* Alamofire */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 558C871F2D2ED70200FC0EA7 /* XCRemoteSwiftPackageReference "Alamofire" */;
+			productName = Alamofire;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

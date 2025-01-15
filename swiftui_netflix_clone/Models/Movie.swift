@@ -28,3 +28,8 @@ struct Movie: Codable, Identifiable, Hashable {
     let vote_average: Double?
     let genre_ids: [Int]
 }
+
+struct MovieWithYouTubeId: Codable, Hashable {
+    let movie: Movie
+    let youtubeId: String
+}

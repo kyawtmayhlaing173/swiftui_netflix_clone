@@ -13,7 +13,8 @@ struct NetflixNewsSectionView: View {
     @State private var filters = FilterModel.newsMockArray
     @State private var selectedFilter: FilterModel? = nil
     @State var shouldPlay = false
-    
+    @StateObject private var newsVM = NetflixNewsViewModel()
+
     var body: some View {
         ZStack(alignment: .top) {
             Color.netflixBlack.ignoresSafeArea()
@@ -28,9 +29,15 @@ struct NetflixNewsSectionView: View {
                 Rectangle()
                     .opacity(0)
                     .frame(height: 120)
-                ForEach (0...5) { index in
-                    NetflixNewsMovieCell(shouldPlay: $shouldPlay)
-                        .padding(.vertical, 8)
+                ForEach (Array(newsVM.moviesWithYoutube.enumerated()), id: \.offset) { (index, item) in
+                    NetflixNewsMovieCell(
+                        videoId: item.youtubeId,
+                        title: item.movie.original_name ?? item.movie.original_title,
+                        description: item.movie.overview,
+                        topTenRanking: "\(index + 1 < 10 ? "0": "")\(index + 1)",
+                        shouldPlay: $shouldPlay
+                    )
+                    .padding(.vertical, 8)
                 }
             }
             .padding(.horizontal, 16)

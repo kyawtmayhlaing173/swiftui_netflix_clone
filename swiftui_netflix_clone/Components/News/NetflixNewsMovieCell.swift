@@ -8,9 +8,9 @@
 import SwiftUI
 
 struct NetflixNewsMovieCell: View {
-    var videoId: String = "KpN342I65qM"
-    var title: String = "Check in Hanyang"
-    var description: String = "When an internship brings three men and a woman in disguise to a luxury hotel, their personal missions pull them into each other's past and present."
+    var videoId: String = ""
+    var title: String? = ""
+    var description: String? = ""
     var topTenRanking: String? = nil
     @Binding var shouldPlay: Bool
     var onPlayPressed: (() -> Void)? = nil
@@ -21,19 +21,25 @@ struct NetflixNewsMovieCell: View {
             Color.netflixBlack.ignoresSafeArea()
             
             VStack(alignment: .leading, spacing: 0) {
-                if let ranking = topTenRanking {
+                if topTenRanking != nil {
                     topTenRankingContainer
                 }
                 
                 VStack(alignment: .leading) {
-                    NetflixTrailerView(videoId: "", shouldPlay: $shouldPlay)
+                    NetflixTrailerView(videoId: videoId, shouldPlay: $shouldPlay)
                         .frame(height: 200)
                     
                     Group {
-                        Text(title)
-                            .font(.largeTitle)
-                        Text(description)
-                            .foregroundStyle(.netflixLightGray)
+                        if let title = title {
+                            Text(title)
+                                .font(.largeTitle)
+                        }
+                        
+                        if let description = description {
+                            Text(description)
+                                .foregroundStyle(.netflixLightGray)
+                        }
+                        
                         HStack(spacing: 16) {
                             HStack {
                                 Image(systemName: "play.fill")
