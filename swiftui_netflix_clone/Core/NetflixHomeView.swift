@@ -76,7 +76,7 @@ struct NetflixHomeView: View {
                     NetflixHeroCell(
                         imageName: movies[0].poster_path,
                         title: movies[0].title ?? movies[0].original_name ?? "",
-                        categories: movies[0].genre_ids,
+                        categories: movies[0].genre_ids ?? [],
                         onBackgroundPressed: {
                             onMoviePressed(movie: movies[0])
                         },

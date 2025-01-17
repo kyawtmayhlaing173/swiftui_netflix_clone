@@ -12,7 +12,6 @@ class NetflixNewsViewModel: ObservableObject {
     @Published var allMovies: [Movie] = []
     @Published var moviesWithYoutube: [MovieWithYouTubeId] = []
 
-    
     private let movieDataService = MovieNewsDataService()
     private var cancellables = Set<AnyCancellable>()
     
@@ -21,28 +20,35 @@ class NetflixNewsViewModel: ObservableObject {
     }
     
     func fetchMoviesWithYoutubeIds() {
-            $allMovies.combineLatest(movieDataService.$movies)
-                .map { _, returnedMovies -> [Movie] in
-                    let movies = (returnedMovies?.results ?? [])
-                    return Array(movies.prefix(10))
+        Publishers.CombineLatest3(
+            movieDataService.$trendingMovies,
+            movieDataService.$topTenMovies,
+            movieDataService.$topTenTvShows
+        )
+            .receive(on: DispatchQueue.main)
+            .map {trending, movies, tvShows -> [Movie] in
+                guard let trendingResults = trending?.results,
+                      let movieResults = movies?.results,
+                      let tvShowResults = tvShows?.results
+                else { return [] }
+                return Array(trendingResults.prefix(10)) + Array(tvShowResults.prefix(10)) + Array(movieResults.prefix(10))
+            }
+            .flatMap { movies -> AnyPublisher<[MovieWithYouTubeId], Never> in
+                let publishers = movies.map { movie in
+                    self.movieDataService.fetchYoutubeId(for: "\(movie.original_title ?? movie.original_name ?? "")'s trailer")
+                        .map { youtubeId in
+                            MovieWithYouTubeId(movie: movie, youtubeId: youtubeId)
+                        }
                 }
-                .flatMap { movies -> AnyPublisher<[MovieWithYouTubeId], Never> in
-                    let publishers = movies.map { movie in
-                        self.movieDataService.fetchYoutubeId(for: "\(movie.original_title ?? movie.original_name ?? "")'s trailer")
-                            .map { youtubeId in
-                                MovieWithYouTubeId(movie: movie, youtubeId: youtubeId)
-                            }
-                    }
-                    
-                    return Publishers.MergeMany(publishers)
-                        .collect()
-                        .eraseToAnyPublisher()
-                }
-                .receive(on: DispatchQueue.main)
-                .sink { [weak self] moviesWithYoutube in
-                    self?.moviesWithYoutube = moviesWithYoutube
-                }
-                .store(in: &cancellables)
-        }
 
+                return Publishers.MergeMany(publishers)
+                    .collect()
+                    .eraseToAnyPublisher()
+            }
+            .receive(on: DispatchQueue.main)
+            .sink { [weak self] moviesWithYoutube in
+                self?.moviesWithYoutube = moviesWithYoutube
+            }
+            .store(in: &cancellables)
+    }
 }

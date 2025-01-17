@@ -22,12 +22,8 @@ struct FilterModel: Hashable, Equatable {
     
     static var newsMockArray: [FilterModel] {
         [
-            FilterModel(
-                title: "Coming Soon",
-                isDropdown: false,
-                iconName: "🍿"
-            ),
-            FilterModel(title: "Everyone's Watching", isDropdown: false, iconName: "🔥"),
+            FilterModel(title: "Coming Soon", isDropdown: false, iconName: "🍿"),
+//            FilterModel(title: "Everyone's Watching", isDropdown: false, iconName: "🔥"),
             FilterModel(title: "Top 10 TV Shows", isDropdown: false, iconName: "📺"),
             FilterModel(title: "Top 10 Movies", isDropdown: false, iconName: "🎬")
         ]

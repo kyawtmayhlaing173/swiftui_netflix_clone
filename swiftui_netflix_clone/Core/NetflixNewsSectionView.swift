@@ -11,9 +11,10 @@ struct NetflixNewsSectionView: View {
     @Environment(\.router) var router
     @State private var scrollViewOffset: CGFloat = 0
     @State private var filters = FilterModel.newsMockArray
-    @State private var selectedFilter: FilterModel? = nil
+    @State private var selectedFilter: FilterModel? = FilterModel.newsMockArray[0]
     @State var shouldPlay = false
     @StateObject private var newsVM = NetflixNewsViewModel()
+    @State private var scrollTarget: Int?
 
     var body: some View {
         ZStack(alignment: .top) {
@@ -25,22 +26,32 @@ struct NetflixNewsSectionView: View {
     
     private var scrollViewLayer: some View {
         return ScrollView(.vertical) {
-            VStack {
-                Rectangle()
-                    .opacity(0)
-                    .frame(height: 120)
-                ForEach (Array(newsVM.moviesWithYoutube.enumerated()), id: \.offset) { (index, item) in
-                    NetflixNewsMovieCell(
-                        videoId: item.youtubeId,
-                        title: item.movie.original_name ?? item.movie.original_title,
-                        description: item.movie.overview,
-                        topTenRanking: "\(index + 1 < 10 ? "0": "")\(index + 1)",
-                        shouldPlay: $shouldPlay
-                    )
-                    .padding(.vertical, 8)
+            ScrollViewReader { proxy in
+                VStack {
+                    Rectangle()
+                        .opacity(0)
+                        .frame(height: 100)
+
+                    ForEach (Array(newsVM.moviesWithYoutube.enumerated()), id: \.offset) { (index, item) in
+                        NetflixNewsMovieCell(
+                            videoId: item.youtubeId,
+                            title: item.movie.original_name ?? item.movie.original_title,
+                            description: item.movie.overview,
+                            topTenRanking: "\(index + 1 < 10 ? "0": "")\(index + 1)",
+                            shouldPlay: $shouldPlay
+                        )
+                        .padding(.vertical, 8)
+                    }
+                }
+                .onChange(of: scrollTarget) { oldTarget, newTarget in
+                    if let target = newTarget {
+                        scrollTarget = nil
+                        withAnimation {
+                            proxy.scrollTo(target, anchor: .center)
+                        }
+                    }
                 }
             }
-            .padding(.horizontal, 16)
         }
         .scrollIndicators(.hidden)
         .onScrollGeometryChange(for: Double.self) { geo in
@@ -55,23 +66,27 @@ struct NetflixNewsSectionView: View {
             NetflixHeaderView()
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
-            if scrollViewOffset < 0 {
-                ScrollView(.horizontal) {
-                    HStack {
-                        ForEach(FilterModel.newsMockArray, id: \.self) { filter in
-                            NetflixNewsFilterCell(
-                                title: filter.title,
-                                iconName: filter.iconName,
-                                isSelected: selectedFilter == filter
-                            )
-                            .onTapGesture {
-                                selectedFilter = filter
+            
+            ScrollView(.horizontal) {
+                HStack {
+                    ForEach(Array(FilterModel.newsMockArray.enumerated()), id: \.offset) { index, filter in
+                        NetflixNewsFilterCell(
+                            title: filter.title,
+                            iconName: filter.iconName,
+                            isSelected: selectedFilter == filter
+                        )
+                        .onTapGesture {
+                            selectedFilter = filter
+                            withAnimation(.easeInOut(duration: 3)) {
+                                scrollTarget = index * 10
                             }
                         }
                     }
                 }
-                .scrollIndicators(.hidden)
             }
+            .scrollIndicators(.hidden)
+            .padding(.horizontal)
+            .padding(.bottom)
         }
         .foregroundStyle(Color.netflixWhite)
         .padding(.bottom, 8)
