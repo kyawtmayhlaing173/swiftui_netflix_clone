@@ -55,7 +55,7 @@ struct RateButton: View {
             content: {
                 ZStack {
                     Color.netflixDarkGray.ignoresSafeArea()
-                    HStack(spacing: 12) {
+                    LazyHStack(spacing: 12) {
                         ForEach(RateOption.allCases, id: \.self) {option in
                             rateButton(option: option)
                         }

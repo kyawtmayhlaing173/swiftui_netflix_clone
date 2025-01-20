@@ -13,7 +13,7 @@ struct NetflixCreditList: View {
     
     var body: some View {
         ScrollView {
-            VStack(alignment: .center, spacing: 8) {
+            LazyVStack(alignment: .center, spacing: 8) {
                 Text(title)
                     .font(.title)
                 Text("Cast")

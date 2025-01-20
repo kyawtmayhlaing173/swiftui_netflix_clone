@@ -49,7 +49,7 @@ struct NetflixHeroCell: View {
                         .multilineTextAlignment(.center)
                 }
                 
-                HStack(spacing: 8) {
+                LazyHStack(spacing: 8) {
                     ForEach(categories, id: \.self) { category in
                         Text(homeVM.getGenresNameById(id: category))
                             .font(.callout)

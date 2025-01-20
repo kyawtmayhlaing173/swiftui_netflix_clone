@@ -54,7 +54,7 @@ struct NetflixEpisodesView: View {
             
             
             
-            VStack {
+            LazyVStack {
                 ForEach(Array(detailVM.episodes.enumerated()), id: \.offset) { (index, episode) in
                     NetflixEpisodeCell(
                         episodeNo: episode.episode_number ?? index,

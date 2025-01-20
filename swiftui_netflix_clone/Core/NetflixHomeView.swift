@@ -67,7 +67,7 @@ struct NetflixHomeView: View {
         let movies = homeVM.allMovies;
         
         return ScrollView(.vertical) {
-            VStack(spacing: 8) {
+            LazyVStack(spacing: 8) {
                 Rectangle()
                     .opacity(0)
                     .frame(height: 120)
@@ -104,41 +104,8 @@ struct NetflixHomeView: View {
         }
     }
     
-    private func onSearchPressed() {
-        router.showScreen(.fullScreenCover) { _ in
-            NetflixSearchView()
-        }
-    }
-    
     private func onCategoriesPressed(genre: Genre) {
         homeVM.getMovieByGenre(genre: genre)
-    }
-    
-    private var header: some View {
-        HStack(spacing: 0) {
-            Text("For You")
-                .frame(maxWidth: .infinity, alignment: .leading)
-                .font(.title)
-                .onTapGesture {
-                    router.dismissScreen()
-                }
-            HStack(spacing: 14) {
-                Image(systemName: "tv.badge.wifi")
-                    .onTapGesture {
-                        
-                    }
-                Image(systemName: "arrow.down.to.line")
-                    .onTapGesture {
-                        
-                    }
-                Image(systemName: "magnifyingglass")
-                    .onTapGesture {
-                        onSearchPressed()
-                    }
-            }
-        }
-        .background(Color.clear)
-        .foregroundColor(Color.netflixWhite)
     }
     
     func getTrendingMoviesByCategory(selectedFilter: FilterModel?) {
@@ -150,7 +117,7 @@ struct NetflixHomeView: View {
     
     private var fullHeaderwithFilter: some View {
         VStack(spacing: 0) {
-            header
+            NetflixHeaderView(title: "For Pinky")
                 .padding(.horizontal, 16)
             
             if scrollViewOffset < 0 {
@@ -193,7 +160,6 @@ struct NetflixHomeView: View {
                     Rectangle()
                         .fill(Color.clear)
                         .background(.ultraThinMaterial)
-                        .brightness(-0.2)
                         .ignoresSafeArea()
                 }
             }

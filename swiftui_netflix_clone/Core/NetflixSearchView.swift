@@ -36,7 +36,7 @@ struct NetflixSearchView: View {
                     SearchBar(text: $searchText, vm: searchVM)
                 }
                 ScrollView {
-                    VStack(alignment: .leading) {
+                    LazyVStack(alignment: .leading) {
                         Text("Recommended TV Shows & Movies")
                             .font(.headline)
                             .padding(.bottom)

@@ -134,7 +134,7 @@ struct NetflixNewsMovieCell: View {
                     videoId: "SiCTXSwqzkw",
                     title: movie.original_name,
                     description: movie.overview,
-                    topTenRanking: "01",
+                    topTenRanking: "15",
                     shouldPlay: $shouldPlay
                 )
             }

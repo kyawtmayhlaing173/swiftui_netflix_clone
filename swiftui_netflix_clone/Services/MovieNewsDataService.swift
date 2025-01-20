@@ -25,7 +25,8 @@ class MovieNewsDataService {
     }
     
     func getTrendingMovies() {
-        guard let url = URL(string: "\(Constants.baseURL)/3/trending/all/day?api_key=\(Constants.API_KEY)") else {
+        guard let url = URL(string:
+            "\(Constants.baseURL)/3/movie/upcoming?api_key=\(Constants.API_KEY)") else {
             return
         }
         trendingSubscription = NetworkingManager.download(url: url)
@@ -33,7 +34,6 @@ class MovieNewsDataService {
             .receive(on: DispatchQueue.main)
             .sink(receiveCompletion: NetworkingManager.handleCompletion, receiveValue: { [weak self] movies in
                 self?.trendingMovies = movies
-                print("🔥Result 1 is \(movies.results.count)")
                 self?.trendingSubscription?.cancel()
             })
     }
@@ -77,7 +77,7 @@ class MovieNewsDataService {
                     case .success(let results):
                         let videoId = results.items.first?.id.videoId ?? ""
                         promise(.success(videoId))
-                    case .failure(let error):
+                    case .failure(_):
                         promise(.success(""))
                     }
                 }

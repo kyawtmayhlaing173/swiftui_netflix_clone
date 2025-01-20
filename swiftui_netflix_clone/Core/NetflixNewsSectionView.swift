@@ -15,7 +15,8 @@ struct NetflixNewsSectionView: View {
     @State var shouldPlay = false
     @StateObject private var newsVM = NetflixNewsViewModel()
     @State private var scrollTarget: Int?
-
+    @State private var categoryScrollTarget: Int?
+    
     var body: some View {
         ZStack(alignment: .top) {
             Color.netflixBlack.ignoresSafeArea()
@@ -27,7 +28,7 @@ struct NetflixNewsSectionView: View {
     private var scrollViewLayer: some View {
         return ScrollView(.vertical) {
             ScrollViewReader { proxy in
-                VStack {
+                LazyVStack {
                     Rectangle()
                         .opacity(0)
                         .frame(height: 100)
@@ -47,7 +48,7 @@ struct NetflixNewsSectionView: View {
                     if let target = newTarget {
                         scrollTarget = nil
                         withAnimation {
-                            proxy.scrollTo(target, anchor: .center)
+                            proxy.scrollTo(target, anchor: .bottom)
                         }
                     }
                 }
@@ -57,28 +58,58 @@ struct NetflixNewsSectionView: View {
         .onScrollGeometryChange(for: Double.self) { geo in
             geo.contentOffset.y
         } action: { oldValue, newValue in
-            scrollViewOffset = newValue
+            withAnimation {
+                scrollViewOffset = newValue
+                let number = max(scrollViewOffset/500, 0)
+                let currentItem = Int(round(number))
+                updateSelectedFilter(currentItem: currentItem)
+            }
+        }
+    }
+    
+    private func updateSelectedFilter(currentItem: Int) {
+        if (currentItem >= 0 && currentItem < 11) {
+            selectedFilter = FilterModel.newsMockArray[0]
+            categoryScrollTarget = 0
+        } else if (currentItem >= 11 && currentItem < 21) {
+            selectedFilter = FilterModel.newsMockArray[1]
+            categoryScrollTarget = 1
+        } else {
+            selectedFilter = FilterModel.newsMockArray[2]
+            categoryScrollTarget = 2
         }
     }
     
     private var fullHeaderwithFilter: some View {
-        VStack(spacing: 0) {
-            NetflixHeaderView()
-                .padding(.horizontal, 16)
-                .padding(.vertical, 8)
+        LazyVStack(spacing: 0) {
+            if scrollViewOffset < 0 {
+                NetflixHeaderView(title: "For You")
+                    .padding(.horizontal, 16)
+                    .padding(.bottom, 8)
+            }
             
             ScrollView(.horizontal) {
-                HStack {
-                    ForEach(Array(FilterModel.newsMockArray.enumerated()), id: \.offset) { index, filter in
-                        NetflixNewsFilterCell(
-                            title: filter.title,
-                            iconName: filter.iconName,
-                            isSelected: selectedFilter == filter
-                        )
-                        .onTapGesture {
-                            selectedFilter = filter
-                            withAnimation(.easeInOut(duration: 3)) {
-                                scrollTarget = index * 10
+                ScrollViewReader { proxy in
+                    LazyHStack {
+                        ForEach(Array(FilterModel.newsMockArray.enumerated()), id: \.offset) { index, filter in
+                            NetflixNewsFilterCell(
+                                title: filter.title,
+                                iconName: filter.iconName,
+                                isSelected: selectedFilter == filter
+                            )
+                            .onChange(of: categoryScrollTarget) { oldTarget, newTarget in
+                                if let target = newTarget {
+                                    categoryScrollTarget = nil
+                                    withAnimation {
+                                        proxy.scrollTo(target, anchor: .leading)
+                                    }
+                                }
+                            }
+                            .onTapGesture {
+                                selectedFilter = filter
+                                withAnimation(.easeInOut(duration: 3)) {
+                                    scrollTarget = index * 10
+                                }
                             }
                         }
                     }
@@ -96,7 +127,6 @@ struct NetflixNewsSectionView: View {
                     Rectangle()
                         .fill(Color.clear)
                         .background(.ultraThinMaterial)
-                        .brightness(-0.2)
                         .ignoresSafeArea()
                 }
             }

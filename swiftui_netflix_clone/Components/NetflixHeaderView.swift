@@ -9,10 +9,17 @@ import SwiftUI
 
 struct NetflixHeaderView: View {
     @Environment(\.router) var router
+    var title: String
+    
+    private func onSearchPressed() {
+        router.showScreen(.fullScreenCover) { _ in
+            NetflixSearchView()
+        }
+    }
 
     var body: some View {
         HStack(spacing: 0) {
-            Text("For Pinky")
+            Text(title)
                 .frame(maxWidth: .infinity, alignment: .leading)
                 .font(.title)
                 .onTapGesture {
@@ -29,7 +36,7 @@ struct NetflixHeaderView: View {
                     }
                 Image(systemName: "magnifyingglass")
                     .onTapGesture {
-                        
+                        onSearchPressed()
                     }
             }
         }
@@ -39,5 +46,8 @@ struct NetflixHeaderView: View {
 }
 
 #Preview {
-    NetflixHeaderView()
+    ZStack {
+        Color.netflixBlack.ignoresSafeArea()
+        NetflixHeaderView(title: "For Pinky")
+    }
 }
